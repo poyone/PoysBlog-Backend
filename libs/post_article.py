@@ -51,7 +51,7 @@ async def process_markdown_file(filepath):
 # 处理一个目录中的所有 Markdown 文件
 async def process_directory(directory):
     for filename in os.listdir(directory):
-        if filename.endswith('.md'):
+        if filename.endswith('summary.md'):
             filepath = os.path.join(directory, filename)
             print(f'Processing {filepath}...')
             await process_markdown_file(filepath)

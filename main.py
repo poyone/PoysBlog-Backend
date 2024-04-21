@@ -5,6 +5,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 
+from routers.admin import router as admin_router
 from routers.home import router as post_router
 
 DB_URL = config('DB_URL', cast=str)
@@ -34,7 +35,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(post_router, prefix="/post", tags=["post"])
+app.include_router(post_router, prefix="/blog", tags=["blog"])
+app.include_router(admin_router, prefix="/admin", tags=["admin"])
 
 if __name__ == "__main__":
     import uvicorn    

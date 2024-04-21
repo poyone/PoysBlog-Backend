@@ -1,5 +1,8 @@
+from ast import For
+from datetime import datetime
 from typing import Optional
 
+from fastapi import File, Form, UploadFile
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic.functional_validators import BeforeValidator
 from typing_extensions import Annotated
@@ -10,7 +13,11 @@ class Post(BaseModel):
     title: str
     slug: str
     content: str
+    tags: list[str]
     model_config = ConfigDict(
         populate_by_name=True,
         arbitrary_types_allowed=True,
+
     )
+    
+    
