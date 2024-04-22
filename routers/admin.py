@@ -1,14 +1,18 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
-from fastapi import APIRouter, Depends, File, HTTPException, Request, UploadFile, status
+from fastapi import (APIRouter, Depends, File, HTTPException, Request,
+                     UploadFile, status)
 from fastapi.responses import JSONResponse
+from fastapi.security import OAuth2PasswordRequestForm
 from pymongo.collection import Collection
 from slugify import slugify
 
+from auth import (ACCESS_TOKEN_EXPIRE_MINUTES, authenticate_user,
+                  create_access_token, verify_token)
 from libs.connet_db import get_collection
 from models.admin_models import CreatePost
 
-router = APIRouter()
+router = APIRouter(prefix="/admin", tags=["admin"])
 
 
 @router.post(
@@ -19,7 +23,7 @@ router = APIRouter()
     # response_model_by_alias=False,
 )
 async def upload_post(
-    request: Request, collection: Collection = Depends(get_collection)
+    request: Request, collection: Collection = Depends(get_collection), current_user: dict = Depends(verify_token)
 ):
 
     form_data = await request.form()
@@ -64,7 +68,7 @@ async def upload_post(
 
 
 @router.get("/articles", response_description="Get all articles")
-async def get_articles(collection: Collection = Depends(get_collection)):
+async def get_articles(collection: Collection = Depends(get_collection), current_user: dict = Depends(verify_token)):
     articles = []
     async for article in collection.find(
         {},
@@ -79,3 +83,22 @@ async def get_articles(collection: Collection = Depends(get_collection)):
     ):
         articles.append(article)
     return JSONResponse(content=articles)
+
+
+# 登录接口
+@router.post("/login")
+def login(form_data: OAuth2PasswordRequestForm = Depends()):
+    user = authenticate_user(form_data.username, form_data.password)
+    # user = authenticate_user(form_data.username, form_data.password)
+    if not user:
+        raise HTTPException(status_code=400, detail="Incorrect username or password")
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": user["username"]}, expires_delta=access_token_expires
+    )
+
+    response = {"access_token": access_token, "token_type": "bearer"}
+    response = JSONResponse(content=response)
+    response.set_cookie(key="session", value=access_token, httponly=True)
+
+    return response

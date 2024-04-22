@@ -35,8 +35,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(post_router, prefix="/blog", tags=["blog"])
-app.include_router(admin_router, prefix="/admin", tags=["admin"])
+app.include_router(post_router)
+app.include_router(admin_router)
 
 if __name__ == "__main__":
     import uvicorn    
