@@ -1,4 +1,6 @@
+import os
 from datetime import datetime, timedelta
+import re
 
 from fastapi import (APIRouter, Depends, File, HTTPException, Request,
                      UploadFile, status)
@@ -7,7 +9,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from pymongo.collection import Collection
 from slugify import slugify
 
-from auth import (ACCESS_TOKEN_EXPIRE_MINUTES, authenticate_user,
+from auth import (authenticate_user,
                   create_access_token, verify_token)
 from libs.connet_db import get_collection
 from models.admin_models import CreatePost
@@ -69,6 +71,8 @@ async def upload_post(
 
 @router.get("/articles", response_description="Get all articles")
 async def get_articles(collection: Collection = Depends(get_collection), current_user: dict = Depends(verify_token)):
+# async def get_articles(request: Request, collection: Collection = Depends(get_collection),):
+    # request
     articles = []
     async for article in collection.find(
         {},
@@ -92,7 +96,7 @@ def login(form_data: OAuth2PasswordRequestForm = Depends()):
     # user = authenticate_user(form_data.username, form_data.password)
     if not user:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token_expires = timedelta(minutes=int(os.environ.get('ACCESS_TOKEN_EXPIRE_MINUTES')))
     access_token = create_access_token(
         data={"sub": user["username"]}, expires_delta=access_token_expires
     )
