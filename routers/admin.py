@@ -1,6 +1,6 @@
 import os
-from datetime import datetime, timedelta
 import re
+from datetime import datetime, timedelta
 
 from fastapi import (APIRouter, Depends, File, HTTPException, Request,
                      UploadFile, status)
@@ -9,8 +9,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from pymongo.collection import Collection
 from slugify import slugify
 
-from auth import (authenticate_user,
-                  create_access_token, verify_token)
+from auth import authenticate_user, create_access_token, verify_token
 from libs.connet_db import get_collection
 from models.admin_models import CreatePost
 

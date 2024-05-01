@@ -1,7 +1,6 @@
 from typing import List, Optional
 
 from bson import ObjectId
-from exceptiongroup import catch
 from fastapi import (APIRouter, Depends, HTTPException, Request, Response,
                      status)
 from fastapi.responses import JSONResponse

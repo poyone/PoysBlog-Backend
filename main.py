@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
 
 from decouple import config
+from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -10,6 +11,7 @@ from routers.home import router as post_router
 
 DB_URL = config('DB_URL', cast=str)
 DB_NAME = config('DB_NAME', cast=str)
+load_dotenv()
 
 # define origins
 origins = ["*"]
