@@ -11,7 +11,7 @@ from slugify import slugify
 from libs.connet_db import get_collection
 from models.blog_models import Post
 
-router = APIRouter(prefix="/blog", tags=["blog"])
+router = APIRouter(prefix="/api/blog", tags=["blog"])
 
 
 @router.get("/", response_description="List latest Articles")

@@ -13,7 +13,7 @@ from auth import authenticate_user, create_access_token, verify_token
 from libs.connet_db import get_collection
 from models.admin_models import CreatePost
 
-router = APIRouter(prefix="/admin", tags=["admin"])
+router = APIRouter(prefix="/api/admin", tags=["admin"])
 
 
 @router.post(
